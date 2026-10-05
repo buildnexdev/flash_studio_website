@@ -249,10 +249,10 @@ export function PublicLayout() {
                         </Link>
                     </div>
 
-                    {/* Right Navigation: WEDDING FILMS, CONTACT */}
+                    {/* Right Navigation: PRODUCTS, CONTACT */}
                     <nav className="hidden lg:flex items-center gap-9 xl:gap-14 flex-1 justify-start pl-8 xl:pl-14" aria-label="Right Navigation">
                         <NavLink
-                            to="/portfolio?category=Wedding%20Films"
+                            to="/products"
                             className={({ isActive }) =>
                                 clsx(
                                     'text-xs xl:text-[13px] font-normal tracking-[0.25em] uppercase transition-colors duration-200',
@@ -266,7 +266,7 @@ export function PublicLayout() {
                                 )
                             }
                         >
-                            Wedding Films
+                            Products
                         </NavLink>
 
                         <NavLink
@@ -336,10 +336,10 @@ export function PublicLayout() {
                             </li>
                             <li>
                                 <NavLink
-                                    to="/portfolio?category=Wedding%20Films"
+                                    to="/products"
                                     className="block py-2 text-xs font-medium tracking-[0.25em] uppercase hover:text-[#8c7047]"
                                 >
-                                    Wedding Films
+                                    Products
                                 </NavLink>
                             </li>
                             <li>
@@ -461,7 +461,7 @@ export function PublicLayout() {
                                 <li><Link to="/portfolio?category=Weddings" className="hover:text-stone-950 transition-colors">Weddings</Link></li>
                                 <li><Link to="/portfolio?category=Couples" className="hover:text-stone-950 transition-colors">Couples</Link></li>
                                 <li><Link to="/portfolio?category=Candid" className="hover:text-stone-950 transition-colors">Candid Moments</Link></li>
-                                <li><Link to="/portfolio?category=Wedding%20Films" className="hover:text-stone-950 transition-colors">Wedding Films</Link></li>
+                                <li><Link to="/products" className="hover:text-stone-950 transition-colors">Products & Albums</Link></li>
                             </ul>
                         </div>
 
