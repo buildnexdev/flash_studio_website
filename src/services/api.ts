@@ -91,10 +91,17 @@ async function request<T = unknown>(method: string, path: string, body?: unknown
         throw new ApiError(msg, res.status, json?.errors ?? [], json?.code);
     }
 
-    if (json && typeof json === 'object' && 'data' in json && json.data !== undefined) {
-        return json.data as T;
+    if (!json || typeof json !== 'object' || json.success !== true || !('data' in json)) {
+        const looksHtml = /^\s*</.test(text);
+        throw new ApiError(
+            looksHtml
+                ? 'API returned HTML instead of JSON. Set VITE_API_URL to your Render API URL in Vercel environment variables.'
+                : 'Unexpected response from the server.',
+            res.status,
+        );
     }
-    return (json ?? ({} as unknown)) as T;
+
+    return json.data as T;
 }
 
 export const api = {
