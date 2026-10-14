@@ -8,7 +8,14 @@ function mergeSiteData(raw: SiteData | undefined): SiteData {
         ...fallbackSiteData,
         ...raw,
         studio: { ...fallbackSiteData.studio, ...raw.studio },
-        website: raw.website ? { ...fallbackSiteData.website, ...raw.website } : fallbackSiteData.website,
+        website: raw.website
+            ? {
+                  ...fallbackSiteData.website,
+                  ...raw.website,
+                  products: raw.website.products ?? [],
+                  slides: raw.website.slides?.length ? raw.website.slides : fallbackSiteData.website?.slides,
+              }
+            : fallbackSiteData.website,
         services: Array.isArray(raw.services) ? raw.services : fallbackSiteData.services,
         packages: Array.isArray(raw.packages) ? raw.packages : fallbackSiteData.packages,
         portfolio: Array.isArray(raw.portfolio) ? raw.portfolio : fallbackSiteData.portfolio,

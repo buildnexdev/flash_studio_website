@@ -55,10 +55,13 @@ export interface SessionPayload {
     home: string;
 }
 
+const STUDIO_SLUG = (import.meta.env.VITE_STUDIO_SLUG || 'flashlight').trim();
+
 async function request<T = unknown>(method: string, path: string, body?: unknown, headersInit?: Record<string, string>): Promise<T> {
     const url = `${API_BASE}${path}`;
     const headers: Record<string, string> = {
         Accept: 'application/json',
+        'X-Studio-Slug': STUDIO_SLUG,
         ...headersInit,
     };
     if (accessToken) headers.Authorization = `Bearer ${accessToken}`;
@@ -124,7 +127,7 @@ export const api = {
     post: <T = unknown>(path: string, body?: unknown, headers?: Record<string, string>) => request<T>('POST', path, body, headers),
     send: <T = unknown>(method: string, path: string, body?: unknown, headers?: Record<string, string>): Promise<{ data: T; message: string }> => {
         const url = `${API_BASE}${path}`;
-        const h: Record<string, string> = { Accept: 'application/json', ...headers };
+        const h: Record<string, string> = { Accept: 'application/json', 'X-Studio-Slug': STUDIO_SLUG, ...headers };
         if (accessToken) h.Authorization = `Bearer ${accessToken}`;
         let initBody: string | undefined;
         if (body !== undefined) {
