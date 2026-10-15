@@ -396,13 +396,29 @@ export default function Products() {
 
     const fileInputRef = useRef<HTMLInputElement>(null);
 
+    const productPrice = (val: number | string | null | undefined): number => {
+        const n = Number(val ?? 0);
+        return n >= 10000 ? Math.round(n / 100) : Math.round(n);
+    };
+
+    const formatProductPrice = (val: number | string | null | undefined): string => {
+        return `₹${productPrice(val).toLocaleString('en-IN')}`;
+    };
+
     const productsList: ShopProductItem[] =
         website?.products && website.products.length > 0 ? (website.products as unknown as ShopProductItem[]) : defaultProducts;
 
     const categories = ['All', 'Photo Frames', 'Photo Albums', 'Photo Prints', 'Photo Cups', 'Customized Gifts'];
 
+    const normalizeCat = (cat: string) => (cat || '').toLowerCase().replace(/photo\s+/g, '').replace(/[^a-z0-9]/g, '');
+
     const filteredProducts =
-        selectedCategory === 'All' ? productsList : productsList.filter((p) => p.category === selectedCategory);
+        selectedCategory === 'All'
+            ? productsList
+            : productsList.filter((p) => {
+                  if (p.category === selectedCategory) return true;
+                  return normalizeCat(p.category) === normalizeCat(selectedCategory);
+              });
 
     useSeo({
         title: `Fine Art Print Products & Albums | ${studio.name || 'FlashLight Photography'}`,
@@ -511,8 +527,10 @@ export default function Products() {
     const handleCompleteOrder = () => {
         if (!activeProduct || !existingCustomer) return;
 
-        const subtotal = activeProduct.price * quantity;
-        const customization = (activeProduct.customizationPrice || 0) * quantity;
+        const base = productPrice(activeProduct.price);
+        const custom = productPrice(activeProduct.customizationPrice || 0);
+        const subtotal = base * quantity;
+        const customization = custom * quantity;
         const total = subtotal + customization;
 
         const order = {
@@ -621,7 +639,7 @@ export default function Products() {
                                         <h2 className="font-display text-lg font-bold text-stone-900 leading-snug">
                                             {prod.name}
                                         </h2>
-                                        <span className="text-lg font-bold text-stone-900">{money(prod.price, true)}</span>
+                                        <span className="text-lg font-bold text-stone-900">{formatProductPrice(prod.price)}</span>
                                     </div>
                                     <p className="mt-2 text-xs text-stone-600 leading-relaxed line-clamp-2">
                                         {prod.description}
@@ -896,7 +914,7 @@ export default function Products() {
                                             </p>
                                         </div>
                                         <span className="text-sm font-bold text-stone-900">
-                                            {money((activeProduct.price + (activeProduct.customizationPrice || 0)) * quantity, true)}
+                                            {formatProductPrice((productPrice(activeProduct.price) + productPrice(activeProduct.customizationPrice || 0)) * quantity)}
                                         </span>
                                     </div>
 
@@ -1180,7 +1198,7 @@ export default function Products() {
                                                 onClick={handleCompleteOrder}
                                                 className="w-full inline-flex h-12 items-center justify-center gap-2 rounded-xl bg-amber-600 text-xs font-bold uppercase tracking-wider text-white shadow-lg hover:bg-amber-700 transition-colors cursor-pointer"
                                             >
-                                                Confirm Order · {money((activeProduct.price + (activeProduct.customizationPrice || 0)) * quantity, true)}
+                                                Confirm Order · {formatProductPrice((productPrice(activeProduct.price) + productPrice(activeProduct.customizationPrice || 0)) * quantity)}
                                             </button>
                                         </div>
                                     )}
