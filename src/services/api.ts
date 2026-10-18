@@ -1,7 +1,13 @@
 const DEFAULT_PROD_API = 'https://flash-studio-backend.onrender.com';
 
+const rawApiUrl = (import.meta.env.VITE_API_URL ?? '').trim();
+const normalizedApiUrl = rawApiUrl.replace(
+    /^https?:\/\/flash-studio\.onrender\.com\/?$/,
+    DEFAULT_PROD_API,
+);
+
 export const API_BASE = (
-    import.meta.env.VITE_API_URL || (import.meta.env.PROD ? DEFAULT_PROD_API : '')
+    normalizedApiUrl || (import.meta.env.PROD ? DEFAULT_PROD_API : '')
 ).replace(/\/$/, '');
 
 export interface FieldError {
