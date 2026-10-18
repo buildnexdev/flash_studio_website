@@ -137,6 +137,8 @@ export const packageFeatures = (p: Pick<Package, 'features'>): string[] => {
 
 export const apiAsset = (path: string) => {
     if (!path) return '';
-    if (path.startsWith('http://') || path.startsWith('https://')) return path;
-    return `${API_BASE}${path}`;
+    if (path.startsWith('http://') || path.startsWith('https://') || path.startsWith('data:')) return path;
+    // Local static assets stored in the frontend public directory
+    if (path.startsWith('/images/') || path.startsWith('/assets/')) return path;
+    return `${API_BASE}${path.startsWith('/') ? path : `/${path}`}`;
 };
