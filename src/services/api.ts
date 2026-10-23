@@ -1,4 +1,4 @@
-const DEFAULT_PROD_API = 'https://flash-studio-backend.onrender.com';
+const DEFAULT_PROD_API = 'https://flash-studio-backend-84en.onrender.com';
 
 const rawApiUrl = (import.meta.env.VITE_API_URL ?? '').trim();
 const normalizedApiUrl = rawApiUrl.replace(
