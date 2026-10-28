@@ -1,6 +1,6 @@
 import { QrCode } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { Link, useParams } from 'react-router';
+import { Link, useParams, useSearchParams } from 'react-router';
 import { Loading } from '../components/data';
 import { ButtonLink } from '../components/ui';
 import { useSeo } from '../hooks/useSeo';
@@ -12,6 +12,7 @@ const GALLERY_APP = (import.meta.env.VITE_GALLERY_APP_URL || 'https://apps.namma
 export default function QrGallery() {
     const { token: raw = '' } = useParams();
     const token = extractToken(raw);
+    const [search] = useSearchParams();
     const [error] = useState(token ? '' : 'This event gallery link or QR token is invalid.');
 
     useSeo({
@@ -21,9 +22,12 @@ export default function QrGallery() {
 
     useEffect(() => {
         if (!token) return;
-        const target = `${GALLERY_APP}/g/${encodeURIComponent(token)}`;
+        const qs = new URLSearchParams(search);
+        if (!qs.has('src')) qs.set('src', 'qr');
+        const q = qs.toString();
+        const target = `${GALLERY_APP}/g/${encodeURIComponent(token)}${q ? `?${q}` : ''}`;
         window.location.replace(target);
-    }, [token]);
+    }, [token, search]);
 
     return (
         <div className="min-h-dvh bg-ink-900 text-white flex flex-col">
