@@ -7,7 +7,7 @@ import { useSeo } from '../hooks/useSeo';
 import { extractToken } from './GalleryFinder';
 
 /** Guest QR landing on the marketing site. Photos live in the studio app. */
-const GALLERY_APP = (import.meta.env.VITE_GALLERY_APP_URL || 'https://apps.nammaqr.in').replace(/\/+$/, '');
+const GALLERY_APP = (import.meta.env.VITE_GALLERY_APP_URL || 'https://apps.buildnexstudio.in').replace(/\/+$/, '');
 
 export default function QrGallery() {
     const { token: raw = '' } = useParams();

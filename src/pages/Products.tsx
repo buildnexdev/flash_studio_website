@@ -405,8 +405,10 @@ export default function Products() {
         return `₹${productPrice(val).toLocaleString('en-IN')}`;
     };
 
-    const productsList: ShopProductItem[] =
-        website?.products && website.products.length > 0 ? (website.products as unknown as ShopProductItem[]) : defaultProducts;
+    const rawList = website?.products ?? defaultProducts;
+    const productsList: ShopProductItem[] = (rawList as unknown as ShopProductItem[]).filter(
+        (p) => p && p.active !== false,
+    );
 
     const categories = ['All', 'Photo Frames', 'Photo Albums', 'Photo Prints', 'Photo Cups', 'Customized Gifts'];
 
