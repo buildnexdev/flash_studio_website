@@ -54,104 +54,23 @@ interface StoredCustomer {
     passwordHash: string;
 }
 
-const defaultProducts: ShopProductItem[] = [
-    {
-        id: 'frame-classic',
-        name: 'Classic Walnut Frame',
-        category: 'Photo Frames',
-        description: 'A solid walnut-look frame with museum-style acid-free matting and UV protective glass.',
-        price: 499,
-        discount: 0,
-        variants: ['Walnut', 'Natural Oak', 'Matte Black'],
-        sizes: ['8 × 10', '12 × 18', '16 × 24'],
-        stock: 24,
-        active: true,
-        customizable: true,
-        customizationPrice: 100,
-        image: '/images/hero-couple-petals.jpg',
-        placement: { x: 15, y: 12, width: 70, height: 76, aspectRatio: '4:5', padding: 4 }
-    },
-    {
-        id: 'frame-gallery',
-        name: 'Gallery Float Frame',
-        category: 'Photo Frames',
-        description: 'A contemporary floating mount with a soft, archival finish for the moments you cherish.',
-        price: 799,
-        discount: 0,
-        variants: ['Black', 'White', 'Oak'],
-        sizes: ['12 × 18', '16 × 24', '20 × 30'],
-        stock: 12,
-        active: true,
-        customizable: true,
-        customizationPrice: 150,
-        image: '/images/hero-couple-outdoor.jpg',
-        placement: { x: 15, y: 12, width: 70, height: 76, aspectRatio: '4:5', padding: 4 }
-    },
-    {
-        id: 'album-heirloom',
-        name: 'Heirloom Flush-Mount Album',
-        category: 'Photo Albums',
-        description: 'Handcrafted lay-flat pages, genuine Italian leather cover with room for 40 photographs.',
-        price: 1899,
-        discount: 10,
-        variants: ['Linen Sand', 'Linen Forest', 'Linen Charcoal'],
-        sizes: ['20 Pages', '30 Pages', '40 Pages'],
-        stock: 15,
-        active: true,
-        customizable: true,
-        customizationPrice: 250,
-        image: '/images/hero-wedding-garlands.jpg',
-        placement: { x: 15, y: 12, width: 70, height: 76, aspectRatio: '4:5', padding: 4 }
-    },
-    {
-        id: 'prints-fineart',
-        name: 'Fine Art Museum Prints',
-        category: 'Photo Prints',
-        description: 'Rich, true-to-life colour on 310gsm archival cotton rag paper with soft velvety texture.',
-        price: 299,
-        discount: 0,
-        variants: ['Matte', 'Lustre', 'Fine-Art Cotton'],
-        sizes: ['5 × 7', '8 × 10', '12 × 18'],
-        stock: 80,
-        active: true,
-        customizable: true,
-        customizationPrice: 0,
-        image: '/images/weddingphoto1.jpg',
-        placement: { x: 10, y: 10, width: 80, height: 80, aspectRatio: '4:5', padding: 0 }
-    },
-    {
-        id: 'cup-photo',
-        name: 'Personalised Photo Mug',
-        category: 'Photo Cups',
-        description: 'High-gloss ceramic mug finished with a high-definition photo print of your special day.',
-        price: 449,
-        discount: 0,
-        variants: ['White Ceramic', 'Gold Handle', 'Black Magic Mug'],
-        sizes: ['11 oz', '15 oz'],
-        stock: 32,
-        active: true,
-        customizable: true,
-        customizationPrice: 75,
-        image: '/images/BabyShower.jfif',
-        placement: { x: 10, y: 22, width: 80, height: 54, aspectRatio: '3:2', padding: 0 }
-    },
-    {
-        id: 'gift-keepsake',
-        name: 'Engraved Keepsake Gift Box',
-        category: 'Customized Gifts',
-        description: 'Hardwood keepsake box with custom cover photograph and engraved wooden USB flash drive.',
-        price: 999,
-        discount: 5,
-        variants: ['Ivory', 'Midnight Oak'],
-        sizes: ['Standard', 'Large'],
-        stock: 9,
-        active: true,
-        customizable: true,
-        customizationPrice: 125,
-        image: '/images/house warming.jfif',
-        placement: { x: 15, y: 12, width: 70, height: 76, aspectRatio: '4:5', padding: 4 }
-    },
-];
+const DEMO_PRODUCT_IDS = new Set([
+    'frame-classic',
+    'frame-gallery',
+    'album-heirloom',
+    'prints-fineart',
+    'cup-photo',
+    'gift-keepsake',
+    'cs-3d-photo',
+    'cs-pencil-art',
+    'cs-led-frame',
+    'cs-magic-mug',
+    'cs-phone-case',
+    'cs-photo-pillow',
+    'test',
+]);
+
+const defaultProducts: ShopProductItem[] = [];
 
 const CUSTOMER_STORAGE_KEY = 'photolab.shop.customers.v1';
 const ORDER_STORAGE_KEY = 'photolab.shop.orders.v1';
@@ -405,9 +324,9 @@ export default function Products() {
         return `₹${productPrice(val).toLocaleString('en-IN')}`;
     };
 
-    const rawList = website?.products ?? defaultProducts;
+    const rawList = Array.isArray(website?.products) ? website.products : defaultProducts;
     const productsList: ShopProductItem[] = (rawList as unknown as ShopProductItem[]).filter(
-        (p) => p && p.active !== false,
+        (p) => p && p.active !== false && !DEMO_PRODUCT_IDS.has(p.id),
     );
 
     const categories = ['All', 'Photo Frames', 'Photo Albums', 'Photo Prints', 'Photo Cups', 'Customized Gifts'];
@@ -617,7 +536,16 @@ export default function Products() {
 
                 {/* Products Grid */}
                 <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-                    {filteredProducts.map((prod) => (
+                    {filteredProducts.length === 0 ? (
+                        <div className="col-span-full py-16 text-center rounded-2xl border border-dashed border-stone-300 bg-stone-50/50 p-8">
+                            <ShoppingBag className="mx-auto size-12 text-stone-400 mb-3" />
+                            <h3 className="font-display text-lg font-bold text-stone-800">No products available currently</h3>
+                            <p className="mt-1 text-sm text-stone-500 max-w-md mx-auto">
+                                The studio will publish bespoke products and print collections shortly. Please check back soon or contact us directly.
+                            </p>
+                        </div>
+                    ) : (
+                        filteredProducts.map((prod) => (
                         <article
                             key={prod.id}
                             className="group flex flex-col overflow-hidden rounded-2xl border border-stone-200/80 bg-white transition-all duration-300 hover:border-amber-400/80 hover:shadow-xl"
@@ -668,7 +596,7 @@ export default function Products() {
                                 </div>
                             </div>
                         </article>
-                    ))}
+                    )))}
                 </div>
 
                 {/* Custom Sizing Banner */}
